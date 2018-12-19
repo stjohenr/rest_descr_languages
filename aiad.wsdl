@@ -1,0 +1,92 @@
+<wsdl:description xmlns:wsdl="http://www.w3.org/ns/wsdl"
+                  targetNamespace="aiadbabelfish/wsdl"
+                  xmlns:tns="aiadbabelfish/wsdl"
+                  xmlns:whttp="http://www.w3.org/ns/wsdl/http"
+                  xmlns:wsdlx="http://www.w3.org/ns/wsdl-extensions"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:aiad="aiadbabelfish/xsd">
+
+    <wsdl:types>
+        <xsd:import namespace="aiadbabelfish.xsd"
+                   schemaLocation="schemas/aiad_wsdl2.xsd"/>
+    </wsdl:types> 
+
+    <wsdl:interface name="AIADInterface">
+        <wsdl:operation name="getAiad"
+                        pattern="http://www.w3.org/ns/wsdl/in-out"
+                        wsdlx:safe="true">
+            <wsdl:documentation>
+                This operation returns the attenuation values for all frequencies at both channels.
+            </wsdl:documentation>
+              <wsdl:input element="getAiad"/>
+              <wsdl:output element="aiad:ResponseAiad"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getAiadChannel"
+                        pattern="http://www.w3.org/ns/wsdl/in-out"
+                        wsdlx:safe="true">
+            <wsdl:documentation>
+                  This operation returns the attenuation values for all frequencies at a specific channel.
+            </wsdl:documentation>
+                  <wsdl:input element="aiad:getAiadChannel"/>
+                  <wsdl:output element="aiad:ResponseAiadChannel"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getAiadChannelFrequency"
+                        pattern="http://www.w3.org/ns/wsdl/in-out"
+                        wsdlx:safe="true">
+            <wsdl:documentation>
+                  This operation returns the attenuation value for a specific frequency at a specific channel.
+            </wsdl:documentation>
+                  <wsdl:input element="aiad:getFrequency"/>
+                  <wsdl:output element="aiad:ResponseFrequency"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="setAiadChannelFrequency"
+                        pattern="http://www.w3.org/ns/wsdl/in-out"
+                        wsdlx:safe="true">
+            <wsdl:documentation>
+                  This operation changes the attenuation value for a specific frequency at a specific channel.
+            </wsdl:documentation>
+                  <wsdl:input element="aiad:setFrequency"/>
+                  <wsdl:output element="aiad:OkNoContent_204"/>
+        </wsdl:operation>
+    </wsdl:interface>
+         
+    <wsdl:binding name="AiadRestApiHTTPBinding"
+                        type="http://www.w3.org/ns/wsdl/http"
+                        interface="tns:AIADInterface">
+        <wsdl:documentation>
+            The RESTful HTTP binding for the AIAD service.
+        </wsdl:documentation>
+        <wsdl:operation
+                ref="tns:getAiad"
+                whttp:method="GET"
+                whttp:location="aiad" />
+        <wsdl:operation
+                ref="tns:getAiadChannel"
+                whttp:method="GET"
+                whttp:location="aiad/{channelId}" />
+        <wsdl:operation
+                ref="tns:getAiadChannelFrequency"
+                whttp:method="GET"
+                whttp:location="aiad/{channelId}/{frequency}" />
+        <wsdl:operation
+                ref="tns:setAiadChannelFrequency"
+                whttp:method="POST"
+                whttp:location="aiad/{channelId}/{frequency}" />
+    </wsdl:binding>
+ 
+  
+    <wsdl:service
+            name="Air Interface Adapter REST API"
+            interface="tns:AIADInterface">
+        <wsdl:documentation>
+            REST interface for Air Interface Adapter.
+        </wsdl:documentation>
+        <wsdl:endpoint name="AIADHTTPEndpoint"
+                       binding="tns:AiadRestApiHTTPBinding"
+                       address="http://aiad-restapi/">
+        </wsdl:endpoint>
+    </wsdl:service>
+</wsdl:description>
